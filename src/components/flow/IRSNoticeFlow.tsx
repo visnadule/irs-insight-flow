@@ -1,9 +1,10 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useLayoutEffect } from "react";
 import {
   ReactFlow,
   Controls,
   useNodesState,
   useEdgesState,
+  useReactFlow,
   MarkerType,
   type Node,
   type Edge,
@@ -33,6 +34,19 @@ const palette = {
   ink: "#1A1D24",
 };
 
+// ─── Auto-fit viewport ────────────────────────────────────────────────────────
+// Rendered as a child of <ReactFlow> so it has access to the flow context.
+// useLayoutEffect fires synchronously after DOM paint — nodes are measured by then.
+
+function AutoFitViewport() {
+  const { fitView } = useReactFlow();
+  useLayoutEffect(() => {
+    fitView({ padding: 0.06, duration: 0 });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+}
+
 // ─── Connected elements helper ────────────────────────────────────────────────
 
 function getConnected(nodeId: string) {
@@ -50,6 +64,10 @@ function getConnected(nodeId: string) {
 
 // ─── Node / edge builders ─────────────────────────────────────────────────────
 
+// Approximate rendered dimensions — allows fitView to compute bounds before DOM measurement.
+const NOTICE_NODE_W = 170;
+const NOTICE_NODE_H = 56;
+
 function buildNoticeNodes(
   selectedId: string | null,
   connectedNodeIds: Set<string>
@@ -62,6 +80,9 @@ function buildNoticeNodes(
       id: n.id,
       type: "noticeNode",
       position: n.position,
+      width: NOTICE_NODE_W,
+      height: NOTICE_NODE_H,
+      measured: { width: NOTICE_NODE_W, height: NOTICE_NODE_H },
       data: { ...n, dimmed, highlighted } as unknown as Record<string, unknown>,
       selectable: true,
       draggable: false,
@@ -74,6 +95,9 @@ function buildTimingNodes(visible: boolean): Node[] {
     id: t.id,
     type: "timingNode",
     position: t.position,
+    width: 80,
+    height: 14,
+    measured: { width: 80, height: 14 },
     data: { text: t.text, visible },
     selectable: false,
     draggable: false,
@@ -261,7 +285,7 @@ export function IRSNoticeFlow() {
           position: "relative",
           minHeight: 0,
           borderTop: `1px solid ${palette.border}`,
-          overflowX: "auto",
+          overflow: "hidden",
         }}
       >
         <ReactFlow
@@ -273,9 +297,7 @@ export function IRSNoticeFlow() {
           onPaneClick={onPaneClick}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
-          fitView
-          fitViewOptions={{ padding: 0.1, minZoom: 0.3, maxZoom: 1.4 }}
-          minZoom={0.2}
+          minZoom={0.15}
           maxZoom={2}
           proOptions={{ hideAttribution: false }}
           style={{ background: "transparent" }}
@@ -285,6 +307,7 @@ export function IRSNoticeFlow() {
           panOnScroll={false}
           preventScrolling={false}
         >
+          <AutoFitViewport />
           <Controls showInteractive={false} />
           <Legend />
         </ReactFlow>

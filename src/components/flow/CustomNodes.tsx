@@ -126,6 +126,7 @@ export function TimingLabelNode({ data }: NodeProps & { data: TimingNodeData }) 
         userSelect: "none",
         background: "transparent",
         border: "none",
+        transform: "translateX(-50%)",
       }}
     >
       {data.text}
