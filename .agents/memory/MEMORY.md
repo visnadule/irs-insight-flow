@@ -1,0 +1,1 @@
+- [IRS Diagram 2 layout](irs-diagram2-layout.md) — timing annotations are separate React Flow nodes (type:timingNode), not edge labels; positions in notices.ts

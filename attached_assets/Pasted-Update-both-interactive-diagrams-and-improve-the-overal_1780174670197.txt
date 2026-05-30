@@ -1,0 +1,255 @@
+Update both interactive diagrams and improve the overall educational flow between them.
+
+PROJECT GOAL
+
+Create a connected learning experience:
+
+1. "Where IRS letters come from"
+   → explains WHY IRS notices are generated.
+
+2. "How IRS notices escalate over time"
+   → explains WHAT happens after a notice is generated.
+
+The two diagrams should feel like parts of the same educational system rather than separate pages.
+
+---
+
+DIAGRAM 1
+"Where IRS letters come from"
+-----------------------------
+
+MAIN MESSAGE
+
+The IRS compares information from two streams:
+
+A) Information reported by the taxpayer.
+
+B) Information reported by employers, banks, brokers, payment processors, and other third parties.
+
+Most IRS notices begin when those records do not match.
+
+---
+
+## SECTION HEADINGS
+
+Replace current technical headings with more intuitive language.
+
+LEFT SIDE
+
+Information from your tax return
+
+Subsections:
+
+• Tax returns
+• Personal information and eligibility
+
+RIGHT SIDE
+
+Information received from third parties
+
+---
+
+## CENTER CONTENT
+
+Add a concise explanation near the IRS node:
+
+"The IRS compares information reported on your tax return with information received from employers, banks, brokers, payment processors, and other reporting entities. When those records do not match, a notice may be generated."
+
+Add visual labels:
+
+Above IRS circle:
+
+"Two streams of information enter the IRS matching system"
+
+Below IRS circle:
+
+"Most IRS notices begin when information from these two streams does not match"
+
+---
+
+## NODE DETAILS
+
+Current node detail design is good and should become the primary interaction model.
+
+For each node display:
+
+SOURCE
+
+REPRESENTS
+
+COMMON MISMATCHES
+
+TYPICAL NOTICES
+
+Examples:
+
+Dependents
+Residency
+Filing Status
+W-2
+1099-NEC
+1099-K
+1099-INT
+1099-DIV
+etc.
+
+---
+
+## DETAIL PANEL BEHAVIOR
+
+Remove the large central popup panel.
+
+Instead:
+
+• Left-side nodes open details beneath the selected left-side node.
+• Right-side nodes open details beneath the selected right-side node.
+• Keep the user's attention near the selected item.
+• Avoid forcing eye movement across the entire diagram.
+
+---
+
+## CONNECTION TO DIAGRAM 2
+
+At the bottom of Diagram 1 add:
+
+"What happens after a mismatch is detected?"
+
+Short explanation:
+
+"A mismatch may result in an IRS notice. Explore how notices typically progress over time."
+
+Button:
+
+"Explore IRS Notice Timeline →"
+
+Link to Diagram 2.
+
+---
+
+DIAGRAM 2
+"How IRS notices escalate over time"
+------------------------------------
+
+MAIN GOAL
+
+Improve readability and make the flow easier to scan.
+
+---
+
+## LAYOUT
+
+Move the legend to the bottom-right corner.
+
+Use empty space more efficiently.
+
+The flow should begin at the far left and expand naturally to the right.
+
+Reduce excessive whitespace.
+
+---
+
+## TIMING ROW
+
+Move timing information to a dedicated second row.
+
+Current timing labels should never overlap:
+
+• nodes
+• arrows
+• connectors
+
+Implement timing as a horizontal timeline beneath the primary notice path.
+
+Example:
+
+CP14
+↓
+~3–6 weeks
+
+CP501
+↓
+~5 weeks
+
+CP503
+↓
+~5 weeks
+
+etc.
+
+---
+
+## DETAIL PANEL
+
+Keep the existing detail panel.
+
+Ensure it never covers important nodes or connections.
+
+Prefer opening details in unused space on the left side of the canvas whenever possible.
+
+---
+
+## VISUAL IMPROVEMENTS
+
+Improve spacing consistency.
+
+Standardize:
+
+• node spacing
+• arrow style
+• connector style
+• line weights
+
+Improve readability on large screens.
+
+Add horizontal scrolling support for smaller screens and mobile devices.
+
+---
+
+## ACTIVE PATH HIGHLIGHTING
+
+When a node is selected:
+
+Highlight:
+
+• connected nodes
+• connected paths
+• decision outcomes
+
+If technically feasible, visually emphasize the entire path associated with the selected notice.
+
+---
+
+## CONNECTION TO DIAGRAM 1
+
+At the top of Diagram 2 add:
+
+"Where did this notice come from?"
+
+Include:
+
+• thumbnail preview of Diagram 1
+• short explanation:
+
+"IRS notices often begin when information reported on a tax return does not match information received from third parties."
+
+Button:
+
+"See how notices are generated →"
+
+Link back to Diagram 1.
+
+---
+
+## OVERALL EXPERIENCE
+
+The educational sequence should be:
+
+Information mismatch
+↓
+Notice generated
+↓
+Notice sequence
+↓
+Resolution, appeal, payment, or collection
+
+Users should be able to move naturally between both diagrams and understand the complete lifecycle of an IRS notice.

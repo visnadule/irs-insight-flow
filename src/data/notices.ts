@@ -6,6 +6,7 @@
  * - Add or modify entries in `noticeEdges` to change the flow connections.
  * - `position` controls placement on the canvas (x = right, y = down).
  * - `category` controls visual style: 'start' | 'notice' | 'end-resolved' | 'end-levy' | 'end-court' | 'end-refund'
+ * - `timingAnnotations` adds the horizontal timing band below each track.
  */
 
 export type NodeCategory =
@@ -38,7 +39,37 @@ export interface NoticeEdgeData {
   style: EdgeStyle;
 }
 
+export interface TimingAnnotation {
+  id: string;
+  text: string;
+  position: { x: number; y: number };
+}
+
+// ─── TIMING ANNOTATIONS (horizontal band below each track) ───────────────────
+// Positioned midway between adjacent nodes, below the main track row.
+
+export const timingAnnotations: TimingAnnotation[] = [
+  // Track 1 — Balance Due (nodes at y=0, timing band at y=90)
+  { id: "t1-1", text: "≈3–6 weeks",    position: { x: 105, y: 90 } },
+  { id: "t1-2", text: "≈5 weeks",       position: { x: 315, y: 90 } },
+  { id: "t1-3", text: "≈5 weeks",       position: { x: 525, y: 90 } },
+  { id: "t1-4", text: "≈5 weeks",       position: { x: 735, y: 90 } },
+  { id: "t1-5", text: "≈5 weeks",       position: { x: 945, y: 90 } },
+  { id: "t1-6", text: "after hearing",  position: { x: 1155, y: 90 } },
+
+  // Track 2 — AUR Mismatch (nodes at y=320, timing band at y=410)
+  { id: "t2-1", text: "≈12–18 months",  position: { x: 105, y: 410 } },
+  { id: "t2-2", text: "≈8 weeks",       position: { x: 315, y: 410 } },
+  { id: "t2-3", text: "≈3–6 months",    position: { x: 525, y: 410 } },
+  { id: "t2-4", text: "within 90 days", position: { x: 735, y: 410 } },
+
+  // Track 3 — Review/Math (nodes at y=510, timing band at y=660)
+  { id: "t3-1", text: "≈45–60 days",    position: { x: 105, y: 660 } },
+  { id: "t3-2", text: "6–8 weeks",      position: { x: 315, y: 660 } },
+];
+
 // ─── NODE DEFINITIONS ────────────────────────────────────────────────────────
+// Compact layout: horizontal spacing = 210px per column
 
 export const noticeNodes: NoticeNodeData[] = [
   // ── START STATES ──────────────────────────────────────────────────────────
@@ -71,7 +102,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Review what the IRS believes you received versus what you reported",
       "Contact a tax professional before responding",
     ],
-    position: { x: 0, y: 560 },
+    position: { x: 0, y: 320 },
   },
   {
     id: "start-filed",
@@ -85,7 +116,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Keep copies of all forms submitted with your return",
       "Respond promptly if the IRS requests documentation",
     ],
-    position: { x: 0, y: 800 },
+    position: { x: 0, y: 510 },
   },
 
   // ── BALANCE DUE / COLLECTION NOTICES ──────────────────────────────────────
@@ -104,7 +135,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Request penalty abatement if you have reasonable cause",
       "Contact a tax professional to review the balance",
     ],
-    position: { x: 260, y: 0 },
+    position: { x: 210, y: 0 },
   },
   {
     id: "cp501",
@@ -119,7 +150,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Request an installment agreement",
       "Dispute the balance if you believe it is incorrect",
     ],
-    position: { x: 520, y: 0 },
+    position: { x: 420, y: 0 },
   },
   {
     id: "cp503",
@@ -135,7 +166,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Explore an Offer in Compromise if you cannot pay the full amount",
       "Contact a tax professional — enforcement options are now close",
     ],
-    position: { x: 780, y: 0 },
+    position: { x: 630, y: 0 },
   },
   {
     id: "cp504",
@@ -151,7 +182,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Apply for an installment agreement or Offer in Compromise",
       "Contact a tax professional without delay",
     ],
-    position: { x: 1040, y: 0 },
+    position: { x: 840, y: 0 },
   },
   {
     id: "lt11",
@@ -167,7 +198,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Explore last-resort options: Offer in Compromise, Currently Not Collectible status",
       "Contact a tax professional immediately — this notice has legal consequences",
     ],
-    position: { x: 1300, y: 0 },
+    position: { x: 1050, y: 0 },
   },
 
   // ── AUR / UNDERREPORTER NOTICES ───────────────────────────────────────────
@@ -185,7 +216,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Respond by the deadline printed on the notice",
       "Contact a tax professional to review your response before submitting",
     ],
-    position: { x: 260, y: 560 },
+    position: { x: 210, y: 320 },
   },
   {
     id: "cp2000",
@@ -202,7 +233,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Request additional time to respond if needed",
       "Contact a tax professional to respond on your behalf",
     ],
-    position: { x: 520, y: 560 },
+    position: { x: 420, y: 320 },
   },
   {
     id: "cp3219a",
@@ -217,7 +248,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Pay the proposed amount in full to stop the assessment clock",
       "Consult a tax professional immediately — this notice triggers court rights",
     ],
-    position: { x: 780, y: 560 },
+    position: { x: 630, y: 320 },
   },
 
   // ── REVIEW / CORRECTION NOTICES ───────────────────────────────────────────
@@ -235,7 +266,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Contact the IRS after 60 days if you have not received an update",
       "Do not amend your return during the review period",
     ],
-    position: { x: 260, y: 750 },
+    position: { x: 210, y: 475 },
   },
   {
     id: "cp75",
@@ -250,7 +281,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Request a deadline extension in writing if you need more time",
       "Contact a tax professional if the credit documentation is complex",
     ],
-    position: { x: 260, y: 870 },
+    position: { x: 210, y: 580 },
   },
   {
     id: "cp12",
@@ -265,7 +296,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "If you agree, no action is required",
       "Dispute the correction within 60 days if you believe it is wrong",
     ],
-    position: { x: 520, y: 750 },
+    position: { x: 420, y: 475 },
   },
   {
     id: "cp49",
@@ -280,7 +311,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Contact the IRS if you believe the offset was applied in error",
       "Contact the Bureau of Fiscal Service for non-IRS debts (student loans, child support)",
     ],
-    position: { x: 520, y: 870 },
+    position: { x: 420, y: 580 },
   },
 
   // ── END STATES ────────────────────────────────────────────────────────────
@@ -298,7 +329,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Make installment payments on time — missed payments can restart the notice sequence",
       "Monitor your IRS account for any remaining balance at irs.gov/account",
     ],
-    position: { x: 1560, y: 190 },
+    position: { x: 1260, y: 190 },
   },
   {
     id: "end-court",
@@ -313,7 +344,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Consider paying the disputed amount and filing a refund claim instead",
       "Retain a tax attorney or enrolled agent for court representation",
     ],
-    position: { x: 1560, y: 380 },
+    position: { x: 840, y: 440 },
   },
   {
     id: "end-levy",
@@ -328,7 +359,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Contact the IRS Taxpayer Advocate Service if the levy creates economic hardship",
       "Contact a tax professional immediately",
     ],
-    position: { x: 1560, y: 0 },
+    position: { x: 1260, y: 0 },
   },
   {
     id: "end-refund",
@@ -342,7 +373,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Verify the refund amount matches what you expected",
       "Dispute the adjustment within 60 days if you disagree",
     ],
-    position: { x: 780, y: 810 },
+    position: { x: 630, y: 510 },
   },
 ];
 
@@ -432,7 +463,7 @@ export const noticeEdges: NoticeEdgeData[] = [
     id: "e-lt11-levy",
     source: "lt11",
     target: "end-levy",
-    condition: "if no CDP hearing",
+    condition: "no CDP hearing",
     timing: "after 30 days",
     style: "escalation",
   },
@@ -511,7 +542,7 @@ export const noticeEdges: NoticeEdgeData[] = [
     id: "e-filed-cp05",
     source: "start-filed",
     target: "cp05",
-    condition: "if selected for review",
+    condition: "if under review",
     timing: "≈45–60 days",
     style: "neutral",
   },
@@ -527,7 +558,7 @@ export const noticeEdges: NoticeEdgeData[] = [
     id: "e-filed-cp12",
     source: "start-filed",
     target: "cp12",
-    condition: "if math error found",
+    condition: "if math error",
     timing: "≈6–8 weeks",
     style: "neutral",
   },
@@ -535,7 +566,7 @@ export const noticeEdges: NoticeEdgeData[] = [
     id: "e-filed-cp49",
     source: "start-filed",
     target: "cp49",
-    condition: "if prior debt exists",
+    condition: "if prior debt",
     timing: "during processing",
     style: "neutral",
   },
