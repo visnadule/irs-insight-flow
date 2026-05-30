@@ -1,0 +1,62 @@
+Build a small, self-contained interactive web app for an educational page on a tax-advisor website (ariataxpa.com). The app must be deployable as a standalone Replit deployment and embeddable in WordPress via a transparent-background iframe.
+
+WHAT THE APP DOES
+Visualizes the IRS notice communication chain — the actual sequence in which letters arrive over time, with branches at decision points. It is NOT a list of notices. It is a time-aware, branching map.
+
+NODES (each is a notice or a state)
+Start states: "Return filed", "Balance due on return", "Mismatch detected by AUR"
+Notices to include as nodes: CP14, CP501, CP503, CP504, LT11, CP2501, CP2000, CP05, CP75, CP12, CP49
+End states: "Resolved (paid / arranged)", "Tax Court petition window", "Levy", "Refund issued / adjusted"
+
+EDGES (each is a transition)
+Edges show:
+- the *typical timing* between events (e.g., "≈30 days", "≈5 weeks")
+- the *condition* for the transition ("if unpaid", "if no response", "if response accepted")
+Examples of edges to encode:
+- Balance due → CP14 (first notice, ≈3–6 weeks after return)
+- CP14 → CP501 (≈5 weeks, if unpaid) ; CP14 → Resolved (if paid)
+- CP501 → CP503 (≈5 weeks, if unpaid)
+- CP503 → CP504 (≈5 weeks, if unpaid) — note: CP504 is intent to levy state tax refunds
+- CP504 → LT11 (≈5 weeks, if unpaid) — note: LT11 is final notice of intent to levy + CDP rights
+- LT11 → Tax Court / Levy window
+- Mismatch detected → CP2501 (soft inquiry) → CP2000 (proposed adjustment) → Agree / Disagree branches → CP3219A (statutory notice) if unresolved
+- Identity / review → CP05, CP75
+- Math error correction → CP12
+
+INTERACTION
+- The chain is rendered as a horizontal-by-default flow (use React Flow or a similar lightweight DAG library).
+- The user can click any node to reveal: a one-paragraph plain-English description, the typical timing of arrival, the taxpayer's options at that point, and a link "See full walkthrough →" pointing to https://ariataxpa.com/irs-notice-help/.
+- Decision-point edges are visually distinct (a small label like "if unpaid" or "if no response"). Resolution edges are visually quieter than escalation edges, but NOT colored red.
+- A small legend in the corner explains node shapes and edge styles.
+- Optional toggle: "Show timing" / "Hide timing" — when on, edges display approximate weeks/days.
+
+STYLE
+- Calm museum-diagram aesthetic. Transit-map influence: clear lines, restrained color, generous spacing.
+- Background: transparent (the WordPress page background will show through). Default text color works on a warm-paper page (#F7F5F0).
+- Palette: slate-blue primary (#3E5C76), warm sage secondary (#7D9A82), restrained terracotta accent (#B97A57) ONLY for "final notice" or "levy" states — never red, never bright orange.
+- Typography: a clean serif for node titles, humanist sans for body and edge labels. Use system serif + Inter as fallback if no custom font.
+- Rounded rectangles for nodes (8px), thin 1.5px edges, soft hover state, no glow.
+- No SaaS dashboard chrome. No KPI cards. No "Pro" buttons.
+
+TECH
+- Vite + React + TypeScript + Tailwind. React Flow for the graph (or @xyflow/react).
+- All notice data lives in a single typed `notices.ts` file as a typed array — easy for the user to edit.
+- Single-page app, no router, no backend.
+- Build target: static site. Deployment via Replit Static / Replit Deployments. Result should be a public URL ending in `.replit.app`.
+
+IFRAME EMBEDDING
+- Layout must work inside an iframe at widths 320–1200px.
+- Provide a small `EmbedAutoResize` helper that posts `window.height` to the parent via `postMessage` on resize/expand, so the WordPress iframe can resize itself.
+- No fixed-position elements that would overlap the parent page.
+- No window-level event listeners that would conflict with the parent page.
+
+WHAT NOT TO BUILD
+- No login, no accounts, no analytics SDKs beyond a simple `console.log` placeholder.
+- No AI chat widget, no "ask a question" box.
+- No animations that play automatically on page load beyond a single soft fade-in.
+- No red color, no warning icons, no "URGENT" labels.
+
+DELIVERABLE
+A working Replit project that builds with `npm run build`, deploys as a static site, and is documented in a short README explaining (1) how to edit the notices array, (2) how to embed via iframe with auto-resize, (3) how to update the deployment.
+
+[For other sessions, swap in: build the IRS Information Hub schema as interactive React Flow (Phase 2 alternate), or build the Notice Taxonomy as a categorical expandable grid (Phase 1).]

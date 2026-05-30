@@ -138,7 +138,44 @@
   }
 
   body {
-    background-color: var(--color-background);
+    background-color: transparent;
     color: var(--color-foreground);
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* React Flow overrides — keep edges and nodes crisp */
+  .react-flow__renderer {
+    border-radius: 0;
+  }
+
+  .react-flow__edge-path {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Suppress default React Flow selection box */
+  .react-flow__nodesselection-rect {
+    border: 1.5px dashed #3E5C76;
+    background: rgba(62,92,118,0.04);
+  }
+
+  /* Node hover cursor */
+  .react-flow__node {
+    cursor: pointer;
+  }
+
+  /* Soft fade-in on load */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .react-flow__viewport {
+    animation: fadeIn 400ms ease both;
   }
 }
