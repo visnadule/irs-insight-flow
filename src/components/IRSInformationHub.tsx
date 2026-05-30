@@ -16,7 +16,7 @@ type CardData = {
 
 const taxpayerCards: { group: string; items: CardData[] }[] = [
   {
-    group: "Compliance forms",
+    group: "Tax returns you file",
     items: [
       { id: "f1040", code: "1040", title: "Individual return", icon: FileText, source: "Filed by the taxpayer", represents: "Annual personal income, deductions, and credits.", mismatches: ["Unreported 1099 income", "Incorrect filing status", "Math/entry errors"], notices: ["CP11", "CP14", "CP2000"] },
       { id: "f1120s", code: "1120-S", title: "S-corp return", icon: Building2, source: "Filed by S-corporations", represents: "Pass-through business income to shareholders via K-1.", mismatches: ["K-1 amounts not reported on 1040", "Late filing"], notices: ["CP162", "CP2000"] },
@@ -25,7 +25,7 @@ const taxpayerCards: { group: string; items: CardData[] }[] = [
     ],
   },
   {
-    group: "Personal circumstances",
+    group: "Information about you",
     items: [
       { id: "pc1", code: "Status", title: "Filing status", source: "Self-reported on 1040", represents: "Single, MFJ, MFS, HoH, or qualifying surviving spouse.", mismatches: ["HoH claimed without qualifying person", "MFS vs MFJ conflicts"], notices: ["CP87A", "CP75"] },
       { id: "pc2", code: "Deps", title: "Dependents", source: "Self-reported on 1040", represents: "Qualifying children and relatives claimed for credits.", mismatches: ["Same dependent claimed twice", "Residency tests failed"], notices: ["CP87A", "CP75A"] },
@@ -117,7 +117,7 @@ export function IRSInformationHub() {
             Where IRS letters come from
           </h1>
           <p className="mt-4 max-w-2xl text-base md:text-lg" style={{ lineHeight: 1.7, color: "#3F434B" }}>
-            Two streams of information reach the IRS before any notice is sent. One comes from you. The other arrives from third parties. Letters are generated when the two do not agree.
+            The IRS receives two streams of information. On the left is what you report — your tax returns and personal circumstances. On the right is what employers, banks, brokers, and other third parties report directly to the IRS. When the two sides do not match, the IRS may generate a notice.
           </p>
         </header>
 
@@ -227,7 +227,7 @@ export function IRSInformationHub() {
               className="mb-4 text-sm font-medium tracking-wide"
               style={{ color: "#6B6B6B", fontFamily: '"Source Serif 4", Georgia, serif', fontStyle: "italic" }}
             >
-              Information returns
+              Information reported by employers, banks, brokers, and other third parties
             </h2>
             <ul className="space-y-3">
               {thirdPartyCards.map((c) => (
