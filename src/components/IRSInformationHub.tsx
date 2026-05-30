@@ -331,7 +331,7 @@ function CardItem({
                   <span
                     key={n}
                     className="rounded px-1.5 py-0.5 text-xs"
-                    style={{ backgroundColor: "#EFEAD F", border: "1px solid #E0DCD3", color: "#3E5C76" }}
+                    style={{ backgroundColor: "#EFEADF", border: "1px solid #E0DCD3", color: "#3E5C76" }}
                   >
                     {n}
                   </span>
