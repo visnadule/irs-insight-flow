@@ -9,8 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WhereIrsLettersComeFromRouteImport } from './routes/where-irs-letters-come-from'
+import { Route as IrsNoticeTimelineRouteImport } from './routes/irs-notice-timeline'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WhereIrsLettersComeFromRoute = WhereIrsLettersComeFromRouteImport.update({
+  id: '/where-irs-letters-come-from',
+  path: '/where-irs-letters-come-from',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IrsNoticeTimelineRoute = IrsNoticeTimelineRouteImport.update({
+  id: '/irs-notice-timeline',
+  path: '/irs-notice-timeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +31,50 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/irs-notice-timeline': typeof IrsNoticeTimelineRoute
+  '/where-irs-letters-come-from': typeof WhereIrsLettersComeFromRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/irs-notice-timeline': typeof IrsNoticeTimelineRoute
+  '/where-irs-letters-come-from': typeof WhereIrsLettersComeFromRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/irs-notice-timeline': typeof IrsNoticeTimelineRoute
+  '/where-irs-letters-come-from': typeof WhereIrsLettersComeFromRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/irs-notice-timeline' | '/where-irs-letters-come-from'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/irs-notice-timeline' | '/where-irs-letters-come-from'
+  id: '__root__' | '/' | '/irs-notice-timeline' | '/where-irs-letters-come-from'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  IrsNoticeTimelineRoute: typeof IrsNoticeTimelineRoute
+  WhereIrsLettersComeFromRoute: typeof WhereIrsLettersComeFromRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/where-irs-letters-come-from': {
+      id: '/where-irs-letters-come-from'
+      path: '/where-irs-letters-come-from'
+      fullPath: '/where-irs-letters-come-from'
+      preLoaderRoute: typeof WhereIrsLettersComeFromRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/irs-notice-timeline': {
+      id: '/irs-notice-timeline'
+      path: '/irs-notice-timeline'
+      fullPath: '/irs-notice-timeline'
+      preLoaderRoute: typeof IrsNoticeTimelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +87,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  IrsNoticeTimelineRoute: IrsNoticeTimelineRoute,
+  WhereIrsLettersComeFromRoute: WhereIrsLettersComeFromRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
