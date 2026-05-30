@@ -23,6 +23,8 @@ export interface NoticeNodeData {
   id: string;
   code: string;
   title: string;
+  subtitle?: string;
+  tooltip?: string;
   category: NodeCategory;
   description: string;
   timing: string;
@@ -104,6 +106,8 @@ export const noticeNodes: NoticeNodeData[] = [
     id: "start-mismatch",
     code: "",
     title: "Mismatch detected by AUR",
+    subtitle: "Automated Underreporter Program",
+    tooltip: "AUR is the IRS system that automatically compares third-party information returns against what was reported on the tax return.",
     category: "start",
     description:
       "The IRS Automated Underreporter (AUR) program compared your return against third-party information returns — W-2s, 1099s, and similar documents — and found a discrepancy. The program operates 12–18 months after the tax year closes, so this notice often arrives long after you filed.",
@@ -218,6 +222,7 @@ export const noticeNodes: NoticeNodeData[] = [
     id: "cp2501",
     code: "CP2501",
     title: "AUR Soft Inquiry",
+    subtitle: "soft inquiry",
     category: "notice",
     description:
       "The first contact in the Automated Underreporter process. The CP2501 asks you to review a discrepancy and explain or correct it. No proposed change to your tax has been made yet. This is a soft inquiry — it gives you an opportunity to respond before a formal adjustment is proposed.",

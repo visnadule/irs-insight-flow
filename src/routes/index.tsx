@@ -162,20 +162,27 @@ function DiagramCard({
           fontFamily: SANS,
           fontSize: 13,
           fontWeight: 500,
-          color: "#FFFFFF",
-          background: "#3E5C76",
+          color: "#3E5C76",
+          background: "transparent",
+          border: "1px solid #3E5C76",
           borderRadius: 6,
-          padding: "9px 16px",
+          padding: "8px 16px",
           display: "inline-flex",
           alignItems: "center",
           textDecoration: "none",
           letterSpacing: "0.01em",
-          transition: "background 150ms ease",
+          transition: "background 150ms ease, color 150ms ease",
           alignSelf: "flex-start",
           marginTop: 4,
         }}
-        onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = "#334e63")}
-        onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = "#3E5C76")}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLAnchorElement).style.background = "#3E5C76";
+          (e.currentTarget as HTMLAnchorElement).style.color = "#FFFFFF";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
+          (e.currentTarget as HTMLAnchorElement).style.color = "#3E5C76";
+        }}
       >
         {buttonLabel}
       </Link>

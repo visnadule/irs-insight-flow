@@ -151,9 +151,12 @@ export function IRSInformationHub() {
           </svg>
 
           {/* LEFT */}
-          <div className="md:col-span-4 relative z-10 space-y-8">
-            {taxpayerCards.map((group) => (
-              <div key={group.group}>
+          <div className="md:col-span-4 relative z-10">
+            {taxpayerCards.map((group, i) => (
+              <div
+                key={group.group}
+                style={i > 0 ? { marginTop: 32, paddingTop: 24, borderTop: "1px solid #D8D2C8" } : undefined}
+              >
                 <h2
                   className="mb-4 text-sm font-medium tracking-wide"
                   style={{ color: "#6B6B6B", fontFamily: '"Source Serif 4", Georgia, serif', fontStyle: "italic" }}

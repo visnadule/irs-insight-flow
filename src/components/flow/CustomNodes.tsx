@@ -35,6 +35,8 @@ function categoryStyle(category: NoticeNodeData["category"]) {
 interface ExtendedNodeData extends NoticeNodeData {
   dimmed?: boolean;
   highlighted?: boolean;
+  subtitle?: string;
+  tooltip?: string;
 }
 
 export function NoticeNode({ data, selected }: NodeProps & { data: ExtendedNodeData }) {
@@ -52,6 +54,7 @@ export function NoticeNode({ data, selected }: NodeProps & { data: ExtendedNodeD
 
   return (
     <div
+      title={data.tooltip}
       style={{
         background: s.bg,
         border: `1.5px solid ${borderColor}`,
@@ -95,6 +98,22 @@ export function NoticeNode({ data, selected }: NodeProps & { data: ExtendedNodeD
       >
         {data.title}
       </div>
+
+      {data.subtitle && (
+        <div
+          style={{
+            fontFamily: SANS,
+            fontSize: 9,
+            fontStyle: "italic",
+            color: palette.muted,
+            marginTop: 3,
+            letterSpacing: "0.02em",
+            lineHeight: 1.3,
+          }}
+        >
+          {data.subtitle}
+        </div>
+      )}
 
       <Handle type="source" position={Position.Right} style={{ opacity: 0, width: 6, height: 6 }} />
       <Handle type="source" position={Position.Bottom} id="bottom" style={{ opacity: 0, width: 6, height: 6 }} />
