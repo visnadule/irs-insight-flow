@@ -25,7 +25,7 @@ const taxpayerCards: { group: string; items: CardData[] }[] = [
     ],
   },
   {
-    group: "Information about you",
+    group: "Information about you that you provide on your tax return",
     items: [
       { id: "pc1", code: "Status", title: "Filing status", source: "Self-reported on 1040", represents: "Single, MFJ, MFS, HoH, or qualifying surviving spouse.", mismatches: ["HoH claimed without qualifying person", "MFS vs MFJ conflicts"], notices: ["CP87A", "CP75"] },
       { id: "pc2", code: "Deps", title: "Dependents", source: "Self-reported on 1040", represents: "Qualifying children and relatives claimed for credits.", mismatches: ["Same dependent claimed twice", "Residency tests failed"], notices: ["CP87A", "CP75A"] },
