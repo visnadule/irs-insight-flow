@@ -50,33 +50,33 @@ export interface TimingAnnotation {
 
 // ── Timing annotation x positions are exact edge midpoints:
 //    midpoint_x = (source_node_x + NODE_W + target_node_x) / 2
-//    NODE_W ≈ 170px.  Column spacing = 300px.
-//    col0=0, col1=300, col2=600, col3=900, col4=1200, col5=1500, col6=1800
-//    col0→col1 midpoint: (170+300)/2 = 235
-//    col1→col2 midpoint: (470+600)/2 = 535
-//    col2→col3 midpoint: (770+900)/2 = 835
-//    col3→col4 midpoint: (1070+1200)/2 = 1135
-//    col4→col5 midpoint: (1370+1500)/2 = 1435
-//    col5→col6 midpoint: (1670+1800)/2 = 1735
+//    NODE_W ≈ 170px.  Column spacing = 250px.
+//    col0=0, col1=250, col2=500, col3=750, col4=1000, col5=1250, col6=1500
+//    col0→col1 midpoint: (170+250)/2 = 210
+//    col1→col2 midpoint: (420+500)/2 = 460
+//    col2→col3 midpoint: (670+750)/2 = 710
+//    col3→col4 midpoint: (920+1000)/2 = 960
+//    col4→col5 midpoint: (1170+1250)/2 = 1210
+//    col5→col6 midpoint: (1420+1500)/2 = 1460
 
 export const timingAnnotations: TimingAnnotation[] = [
   // Track 1 — Balance Due (nodes at y=0, timing band at y=90)
-  { id: "t1-1", text: "≈3–6 weeks",    position: { x: 235, y: 90 } },
-  { id: "t1-2", text: "≈5 weeks",       position: { x: 535, y: 90 } },
-  { id: "t1-3", text: "≈5 weeks",       position: { x: 835, y: 90 } },
-  { id: "t1-4", text: "≈5 weeks",       position: { x: 1135, y: 90 } },
-  { id: "t1-5", text: "≈5 weeks",       position: { x: 1435, y: 90 } },
-  { id: "t1-6", text: "after hearing",  position: { x: 1735, y: 90 } },
+  { id: "t1-1", text: "≈3–6 weeks",    position: { x: 210, y: 90 } },
+  { id: "t1-2", text: "≈5 weeks",       position: { x: 460, y: 90 } },
+  { id: "t1-3", text: "≈5 weeks",       position: { x: 710, y: 90 } },
+  { id: "t1-4", text: "≈5 weeks",       position: { x: 960, y: 90 } },
+  { id: "t1-5", text: "≈5 weeks",       position: { x: 1210, y: 90 } },
+  { id: "t1-6", text: "after hearing",  position: { x: 1460, y: 90 } },
 
   // Track 2 — AUR Mismatch (nodes at y=340, timing band at y=440)
-  { id: "t2-1", text: "≈12–18 months",  position: { x: 235, y: 440 } },
-  { id: "t2-2", text: "≈8 weeks",       position: { x: 535, y: 440 } },
-  { id: "t2-3", text: "≈3–6 months",    position: { x: 835, y: 440 } },
-  { id: "t2-4", text: "within 90 days", position: { x: 1135, y: 440 } },
+  { id: "t2-1", text: "≈12–18 months",  position: { x: 210, y: 440 } },
+  { id: "t2-2", text: "≈8 weeks",       position: { x: 460, y: 440 } },
+  { id: "t2-3", text: "≈3–6 months",    position: { x: 710, y: 440 } },
+  { id: "t2-4", text: "within 90 days", position: { x: 960, y: 440 } },
 
   // Track 3 — Review/Math (nodes at y=540–660, timing band at y=730)
-  { id: "t3-1", text: "≈45–60 days",    position: { x: 235, y: 730 } },
-  { id: "t3-2", text: "6–8 weeks",      position: { x: 535, y: 730 } },
+  { id: "t3-1", text: "≈45–60 days",    position: { x: 210, y: 730 } },
+  { id: "t3-2", text: "6–8 weeks",      position: { x: 460, y: 730 } },
 ];
 
 // ─── NODE DEFINITIONS ────────────────────────────────────────────────────────
@@ -146,7 +146,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Request penalty abatement if you have reasonable cause",
       "Contact a tax professional to review the balance",
     ],
-    position: { x: 300, y: 0 },
+    position: { x: 250, y: 0 },
   },
   {
     id: "cp501",
@@ -161,7 +161,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Request an installment agreement",
       "Dispute the balance if you believe it is incorrect",
     ],
-    position: { x: 600, y: 0 },
+    position: { x: 500, y: 0 },
   },
   {
     id: "cp503",
@@ -177,7 +177,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Explore an Offer in Compromise if you cannot pay the full amount",
       "Contact a tax professional — enforcement options are now close",
     ],
-    position: { x: 900, y: 0 },
+    position: { x: 750, y: 0 },
   },
   {
     id: "cp504",
@@ -193,7 +193,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Apply for an installment agreement or Offer in Compromise",
       "Contact a tax professional without delay",
     ],
-    position: { x: 1200, y: 0 },
+    position: { x: 1000, y: 0 },
   },
   {
     id: "lt11",
@@ -209,7 +209,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Explore last-resort options: Offer in Compromise, Currently Not Collectible status",
       "Contact a tax professional immediately — this notice has legal consequences",
     ],
-    position: { x: 1500, y: 0 },
+    position: { x: 1250, y: 0 },
   },
 
   // ── AUR / UNDERREPORTER NOTICES ───────────────────────────────────────────
@@ -227,7 +227,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Respond by the deadline printed on the notice",
       "Contact a tax professional to review your response before submitting",
     ],
-    position: { x: 300, y: 340 },
+    position: { x: 250, y: 340 },
   },
   {
     id: "cp2000",
@@ -244,7 +244,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Request additional time to respond if needed",
       "Contact a tax professional to respond on your behalf",
     ],
-    position: { x: 600, y: 340 },
+    position: { x: 500, y: 340 },
   },
   {
     id: "cp3219a",
@@ -259,7 +259,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Pay the proposed amount in full to stop the assessment clock",
       "Consult a tax professional immediately — this notice triggers court rights",
     ],
-    position: { x: 900, y: 340 },
+    position: { x: 750, y: 340 },
   },
 
   // ── REVIEW / CORRECTION NOTICES ───────────────────────────────────────────
@@ -277,7 +277,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Contact the IRS after 60 days if you have not received an update",
       "Do not amend your return during the review period",
     ],
-    position: { x: 300, y: 540 },
+    position: { x: 250, y: 540 },
   },
   {
     id: "cp75",
@@ -292,7 +292,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Request a deadline extension in writing if you need more time",
       "Contact a tax professional if the credit documentation is complex",
     ],
-    position: { x: 300, y: 660 },
+    position: { x: 250, y: 660 },
   },
   {
     id: "cp12",
@@ -307,7 +307,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "If you agree, no action is required",
       "Dispute the correction within 60 days if you believe it is wrong",
     ],
-    position: { x: 600, y: 540 },
+    position: { x: 500, y: 540 },
   },
   {
     id: "cp49",
@@ -322,7 +322,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Contact the IRS if you believe the offset was applied in error",
       "Contact the Bureau of Fiscal Service for non-IRS debts (student loans, child support)",
     ],
-    position: { x: 600, y: 660 },
+    position: { x: 500, y: 660 },
   },
 
   // ── END STATES ────────────────────────────────────────────────────────────
@@ -340,7 +340,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Make installment payments on time — missed payments can restart the notice sequence",
       "Monitor your IRS account for any remaining balance at irs.gov/account",
     ],
-    position: { x: 1800, y: 200 },
+    position: { x: 1500, y: 200 },
   },
   {
     id: "end-court",
@@ -355,7 +355,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Consider paying the disputed amount and filing a refund claim instead",
       "Retain a tax attorney or enrolled agent for court representation",
     ],
-    position: { x: 1200, y: 490 },
+    position: { x: 1000, y: 490 },
   },
   {
     id: "end-levy",
@@ -370,7 +370,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Contact the IRS Taxpayer Advocate Service if the levy creates economic hardship",
       "Contact a tax professional immediately",
     ],
-    position: { x: 1800, y: 0 },
+    position: { x: 1500, y: 0 },
   },
   {
     id: "end-refund",
@@ -384,7 +384,7 @@ export const noticeNodes: NoticeNodeData[] = [
       "Verify the refund amount matches what you expected",
       "Dispute the adjustment within 60 days if you disagree",
     ],
-    position: { x: 900, y: 580 },
+    position: { x: 750, y: 580 },
   },
 ];
 
