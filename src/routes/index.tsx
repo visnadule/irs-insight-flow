@@ -52,8 +52,19 @@ function Index() {
     <>
       <EmbedAutoResize />
 
+      {/* ── Diagram 1: Where IRS letters come from ────────────────────────── */}
+      <div id="irs-diagram-1" style={{ width: "100%", minHeight: "100vh" }}>
+        <Suspense fallback={<LoadingDiagram />}>
+          <IRSInformationHub />
+        </Suspense>
+      </div>
+
+      {/* ── Connection block ──────────────────────────────────────────────── */}
+      <DiagramOneLink />
+
       {/* ── Diagram 2: How IRS notices escalate over time ─────────────────── */}
       <div
+        id="irs-diagram-2"
         style={{
           width: "100%",
           height: "100vh",
@@ -65,16 +76,6 @@ function Index() {
       >
         <Suspense fallback={<LoadingDiagram />}>
           <IRSNoticeFlow />
-        </Suspense>
-      </div>
-
-      {/* ── Connection block ──────────────────────────────────────────────── */}
-      <DiagramOneLink />
-
-      {/* ── Diagram 1: Where IRS letters come from ────────────────────────── */}
-      <div id="irs-diagram-1" style={{ width: "100%", minHeight: "100vh" }}>
-        <Suspense fallback={<LoadingDiagram />}>
-          <IRSInformationHub />
         </Suspense>
       </div>
     </>

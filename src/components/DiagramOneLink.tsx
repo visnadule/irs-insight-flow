@@ -11,8 +11,8 @@ const palette = {
   light: "#F0EDE6",
 };
 
-function scrollToDiagram1() {
-  const el = document.getElementById("irs-diagram-1");
+function scrollToDiagram2() {
+  const el = document.getElementById("irs-diagram-2");
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -47,7 +47,7 @@ export function DiagramOneLink() {
           lineHeight: 1.25,
         }}
       >
-        Where did this notice come from?
+        What happens after a mismatch is detected?
       </h2>
 
       <div
@@ -69,10 +69,10 @@ export function DiagramOneLink() {
             boxShadow: "0 2px 8px -2px rgba(26,29,36,0.1)",
             cursor: "pointer",
           }}
-          onClick={scrollToDiagram1}
+          onClick={scrollToDiagram2}
           title="See the full diagram below"
         >
-          <HubThumbnail />
+          <NoticeFlowThumbnail />
         </div>
 
         {/* Text + CTA */}
@@ -82,28 +82,16 @@ export function DiagramOneLink() {
               fontSize: 14,
               color: "#3F434B",
               lineHeight: 1.7,
-              margin: "0 0 10px",
-            }}
-          >
-            Most IRS notices begin when information reported on a tax return
-            does not match information received from employers, banks, brokers,
-            payment processors, or other third-party reporting entities.
-          </p>
-          <p
-            style={{
-              fontSize: 13,
-              color: palette.muted,
-              lineHeight: 1.6,
               margin: "0 0 20px",
             }}
           >
-            The first diagram explains why notices are generated — tracing the
-            two streams of information that enter the IRS matching system and
-            showing where discrepancies arise.
+            When information reported on a tax return does not match information
+            received from employers, banks, brokers, payment processors, or
+            other reporting entities, the IRS may generate a notice.
           </p>
 
           <button
-            onClick={scrollToDiagram1}
+            onClick={scrollToDiagram2}
             style={{
               fontFamily: SANS,
               fontSize: 13,
@@ -127,7 +115,7 @@ export function DiagramOneLink() {
               ((e.target as HTMLButtonElement).style.background = palette.slateBlue)
             }
           >
-            See how notices are generated →
+            Explore the IRS notice timeline →
           </button>
         </div>
       </div>
@@ -135,115 +123,149 @@ export function DiagramOneLink() {
   );
 }
 
-// ── Mini SVG thumbnail representing Diagram 1 (hub diagram) ─────────────────
+// ── Mini SVG thumbnail previewing the notice escalation chain ─────────────────
 
-function HubThumbnail() {
+function NoticeFlowThumbnail() {
   const w = 260;
   const h = 160;
-  const cx = 130;
-  const cy = 80;
-  const r = 22;
 
-  // Left nodes (taxpayer info)
-  const leftNodes = [
-    { y: 30, label: "W-2" },
-    { y: 60, label: "1040" },
-    { y: 90, label: "Deps." },
-    { y: 120, label: "Filings" },
+  const nodes = [
+    { label: "CP14", sub: "Balance Due" },
+    { label: "CP501", sub: "Reminder" },
+    { label: "CP503", sub: "2nd Notice" },
+    { label: "CP504", sub: "Intent" },
+    { label: "LT11", sub: "Final" },
   ];
 
-  // Right nodes (third party)
-  const rightNodes = [
-    { y: 30, label: "1099-W" },
-    { y: 60, label: "1099-K" },
-    { y: 90, label: "Bank" },
-    { y: 120, label: "Broker" },
-  ];
-
-  const nodeW = 44;
-  const nodeH = 16;
-  const leftX = 8;
-  const rightX = w - leftX - nodeW;
+  const nodeW = 38;
+  const nodeH = 26;
+  const gap = 8;
+  const totalW = nodes.length * nodeW + (nodes.length - 1) * gap;
+  const startX = (w - totalW) / 2;
+  const rowY = 52;
 
   return (
     <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ display: "block" }}>
-      {/* Background */}
       <rect width={w} height={h} fill="#FAFAF8" />
 
-      {/* Section labels */}
-      <text x={leftX + nodeW / 2} y={16} textAnchor="middle" fontSize={6} fill="#9CA3AF" fontFamily="Inter, sans-serif" fontWeight={600} letterSpacing={0.5}>
-        TAX RETURN
-      </text>
-      <text x={rightX + nodeW / 2} y={16} textAnchor="middle" fontSize={6} fill="#9CA3AF" fontFamily="Inter, sans-serif" fontWeight={600} letterSpacing={0.5}>
-        THIRD PARTIES
+      {/* Section label */}
+      <text x={w / 2} y={18} textAnchor="middle" fontSize={6} fill="#9CA3AF"
+        fontFamily="Inter, sans-serif" fontWeight={600} letterSpacing={0.5}>
+        IRS NOTICE ESCALATION SEQUENCE
       </text>
 
-      {/* IRS hub */}
-      <circle cx={cx} cy={cy} r={r} fill="#3E5C76" opacity={0.92} />
-      <text x={cx} y={cy + 1} textAnchor="middle" dominantBaseline="middle" fontSize={8.5} fill="#FFFFFF" fontFamily="Inter, sans-serif" fontWeight={600}>
-        IRS
+      {/* Start node */}
+      <rect x={startX - nodeW - gap} y={rowY} width={nodeW} height={nodeH}
+        rx={3} fill="#E5EBF0" stroke="#3E5C76" strokeWidth={0.8} />
+      <text x={startX - nodeW / 2 - gap} y={rowY + 9} textAnchor="middle"
+        dominantBaseline="middle" fontSize={5} fill="#3E5C76"
+        fontFamily="Inter, sans-serif" fontWeight={600}>
+        Balance
       </text>
-      <text x={cx} y={cy + 12} textAnchor="middle" dominantBaseline="middle" fontSize={5} fill="rgba(255,255,255,0.65)" fontFamily="Inter, sans-serif">
-        matching
+      <text x={startX - nodeW / 2 - gap} y={rowY + 18} textAnchor="middle"
+        dominantBaseline="middle" fontSize={4.5} fill="#3E5C76"
+        fontFamily="Inter, sans-serif">
+        due on return
       </text>
 
-      {/* Lines: left → hub */}
-      {leftNodes.map((n) => (
-        <line
-          key={n.y}
-          x1={leftX + nodeW}
-          y1={n.y + nodeH / 2}
-          x2={cx - r}
-          y2={cy}
-          stroke="#3E5C76"
-          strokeWidth={0.8}
-          strokeOpacity={0.28}
-        />
-      ))}
+      {/* Arrow from start */}
+      <line
+        x1={startX - gap} y1={rowY + nodeH / 2}
+        x2={startX - 2} y2={rowY + nodeH / 2}
+        stroke="#3E5C76" strokeWidth={0.9} strokeOpacity={0.45}
+        markerEnd="url(#arr)"
+      />
 
-      {/* Lines: right → hub */}
-      {rightNodes.map((n) => (
-        <line
-          key={n.y}
-          x1={rightX}
-          y1={n.y + nodeH / 2}
-          x2={cx + r}
-          y2={cy}
-          stroke="#3E5C76"
-          strokeWidth={0.8}
-          strokeOpacity={0.28}
-        />
-      ))}
+      {/* Notice chain */}
+      {nodes.map((n, i) => {
+        const x = startX + i * (nodeW + gap);
+        const isLast = i === nodes.length - 1;
+        return (
+          <g key={n.label}>
+            <rect x={x} y={rowY} width={nodeW} height={nodeH}
+              rx={3} fill="#FFFFFF" stroke="#D8D2C8" strokeWidth={0.8} />
+            <text x={x + nodeW / 2} y={rowY + 8} textAnchor="middle"
+              dominantBaseline="middle" fontSize={5.5} fill="#3F434B"
+              fontFamily="Inter, sans-serif" fontWeight={600}>
+              {n.label}
+            </text>
+            <text x={x + nodeW / 2} y={rowY + 18} textAnchor="middle"
+              dominantBaseline="middle" fontSize={4.5} fill="#6B7280"
+              fontFamily="Inter, sans-serif">
+              {n.sub}
+            </text>
+            {!isLast && (
+              <line
+                x1={x + nodeW} y1={rowY + nodeH / 2}
+                x2={x + nodeW + gap - 1} y2={rowY + nodeH / 2}
+                stroke="#3E5C76" strokeWidth={0.9} strokeOpacity={0.45}
+                markerEnd="url(#arr)"
+              />
+            )}
+          </g>
+        );
+      })}
 
-      {/* Left nodes */}
-      {leftNodes.map((n) => (
-        <g key={n.y}>
-          <rect x={leftX} y={n.y} width={nodeW} height={nodeH} rx={3} fill="#F0EDE6" stroke="#D8D2C8" strokeWidth={0.8} />
-          <text x={leftX + nodeW / 2} y={n.y + nodeH / 2 + 1} textAnchor="middle" dominantBaseline="middle" fontSize={5.5} fill="#3F434B" fontFamily="Inter, sans-serif">
-            {n.label}
-          </text>
-        </g>
-      ))}
+      {/* End node (Levy) */}
+      {(() => {
+        const lastX = startX + (nodes.length - 1) * (nodeW + gap);
+        const endX = lastX + nodeW + gap;
+        const endW = 34;
+        return (
+          <>
+            <line
+              x1={lastX + nodeW} y1={rowY + nodeH / 2}
+              x2={endX - 1} y2={rowY + nodeH / 2}
+              stroke="#B97A57" strokeWidth={0.9} strokeOpacity={0.6}
+              markerEnd="url(#arr-red)"
+            />
+            <rect x={endX} y={rowY} width={endW} height={nodeH}
+              rx={3} fill="#FDF0E8" stroke="#B97A57" strokeWidth={0.9} />
+            <text x={endX + endW / 2} y={rowY + 9} textAnchor="middle"
+              dominantBaseline="middle" fontSize={5} fill="#B97A57"
+              fontFamily="Inter, sans-serif" fontWeight={600}>
+              Levy /
+            </text>
+            <text x={endX + endW / 2} y={rowY + 18} textAnchor="middle"
+              dominantBaseline="middle" fontSize={4.5} fill="#B97A57"
+              fontFamily="Inter, sans-serif">
+              Collection
+            </text>
+          </>
+        );
+      })()}
 
-      {/* Right nodes */}
-      {rightNodes.map((n) => (
-        <g key={n.y}>
-          <rect x={rightX} y={n.y} width={nodeW} height={nodeH} rx={3} fill="#FFFFFF" stroke="#D8D2C8" strokeWidth={0.8} />
-          <text x={rightX + nodeW / 2} y={n.y + nodeH / 2 + 1} textAnchor="middle" dominantBaseline="middle" fontSize={5.5} fill="#3F434B" fontFamily="Inter, sans-serif">
-            {n.label}
-          </text>
-        </g>
-      ))}
+      {/* Resolved branch line */}
+      {(() => {
+        const midX = startX + 2 * (nodeW + gap) + nodeW / 2;
+        return (
+          <>
+            <line x1={midX} y1={rowY + nodeH} x2={midX} y2={h - 22}
+              stroke="#7D9A82" strokeWidth={0.8} strokeOpacity={0.55}
+              strokeDasharray="2 2" />
+            <rect x={midX - 22} y={h - 22} width={44} height={14}
+              rx={3} fill="#EAF2EC" stroke="#7D9A82" strokeWidth={0.8} />
+            <text x={midX} y={h - 14} textAnchor="middle"
+              dominantBaseline="middle" fontSize={5} fill="#7D9A82"
+              fontFamily="Inter, sans-serif" fontWeight={500}>
+              Resolved
+            </text>
+          </>
+        );
+      })()}
 
-      {/* Output arrow */}
-      <path d={`M ${cx} ${cy + r} L ${cx} ${h - 6}`} stroke="#B97A57" strokeWidth={1} strokeOpacity={0.6} markerEnd="url(#arrow)" />
-      <text x={cx + 5} y={h - 10} fontSize={5.5} fill="#B97A57" opacity={0.8} fontFamily="Inter, sans-serif">
-        notice
+      {/* Timing label */}
+      <text x={w / 2} y={h - 2} textAnchor="middle" fontSize={5}
+        fill="#9CA3AF" fontFamily="Inter, sans-serif" fontStyle="italic">
+        each step ≈ 5 weeks if unpaid
       </text>
 
       <defs>
-        <marker id="arrow" markerWidth={6} markerHeight={6} refX={3} refY={3} orient="auto">
-          <path d="M0,0 L0,6 L6,3 z" fill="#B97A57" opacity={0.6} />
+        <marker id="arr" markerWidth={5} markerHeight={5} refX={4} refY={2.5} orient="auto">
+          <path d="M0,0 L0,5 L5,2.5 z" fill="#3E5C76" opacity={0.5} />
+        </marker>
+        <marker id="arr-red" markerWidth={5} markerHeight={5} refX={4} refY={2.5} orient="auto">
+          <path d="M0,0 L0,5 L5,2.5 z" fill="#B97A57" opacity={0.65} />
         </marker>
       </defs>
     </svg>
