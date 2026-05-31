@@ -40,9 +40,8 @@ const palette = {
 
 function AutoFitViewport() {
   const { fitView } = useReactFlow();
-  useEffect(() => {
-    const id = setTimeout(() => fitView({ padding: 0.06, duration: 0 }), 0);
-    return () => clearTimeout(id);
+  useLayoutEffect(() => {
+    fitView({ padding: 0.06, duration: 0 });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return null;
@@ -66,7 +65,7 @@ function getConnected(nodeId: string) {
 // ─── Node / edge builders ─────────────────────────────────────────────────────
 
 // Approximate rendered dimensions — allows fitView to compute bounds before DOM measurement.
-const NOTICE_NODE_W = 155;
+const NOTICE_NODE_W = 170;
 const NOTICE_NODE_H = 56;
 
 function buildNoticeNodes(

@@ -10,6 +10,16 @@ const IRSInformationHub = lazy(() =>
 );
 
 export const Route = createFileRoute("/where-irs-letters-come-from")({
+  head: () => ({
+    meta: [
+      { title: "Where IRS Letters Come From — ariataxpa.com" },
+      {
+        name: "description",
+        content:
+          "An educational diagram showing the two streams of information the IRS receives — from taxpayers and from third parties — and how mismatches generate notices.",
+      },
+    ],
+  }),
   component: WhereIRSLettersComeFrom,
 });
 

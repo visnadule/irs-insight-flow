@@ -10,6 +10,16 @@ const IRSNoticeFlow = lazy(() =>
 );
 
 export const Route = createFileRoute("/irs-notice-timeline")({
+  head: () => ({
+    meta: [
+      { title: "IRS Notice Timeline — ariataxpa.com" },
+      {
+        name: "description",
+        content:
+          "An educational diagram showing how IRS notices escalate over time — from the first balance due notice through to enforced collection.",
+      },
+    ],
+  }),
   component: IRSNoticeTimeline,
 });
 
