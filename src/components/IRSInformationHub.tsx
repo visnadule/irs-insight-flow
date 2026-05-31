@@ -305,7 +305,7 @@ function CardItem({
               >
                 {card.code}
               </span>
-              <span className="truncate text-sm" style={{ color: "#1A1D24" }}>
+              <span className="text-sm leading-snug" style={{ color: "#1A1D24" }}>
                 {card.title}
               </span>
             </div>
