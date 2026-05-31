@@ -148,6 +148,8 @@ function DiagramCard({
       </p>
       <Link
         to={href}
+        target="_blank"
+        rel="noopener noreferrer"
         style={{
           fontFamily: SANS,
           fontSize: 13,
