@@ -2,16 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { EmbedAutoResize } from "@/components/EmbedAutoResize";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "IRS Notice Educational Diagrams — ariataxpa.com" },
-      {
-        name: "description",
-        content:
-          "Two connected diagrams explaining why IRS notices are generated and how they escalate over time. An educational resource from ariataxpa.com.",
-      },
-    ],
-  }),
   component: Index,
 });
 
