@@ -42,7 +42,7 @@ function AutoFitViewport() {
   const { fitView } = useReactFlow();
   useLayoutEffect(() => {
     fitView({ padding: 0.06, duration: 0 });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return null;
 }
@@ -68,13 +68,9 @@ function getConnected(nodeId: string) {
 const NOTICE_NODE_W = 170;
 const NOTICE_NODE_H = 56;
 
-function buildNoticeNodes(
-  selectedId: string | null,
-  connectedNodeIds: Set<string>
-): Node[] {
+function buildNoticeNodes(selectedId: string | null, connectedNodeIds: Set<string>): Node[] {
   return noticeNodes.map((n) => {
-    const dimmed =
-      selectedId !== null && selectedId !== n.id && !connectedNodeIds.has(n.id);
+    const dimmed = selectedId !== null && selectedId !== n.id && !connectedNodeIds.has(n.id);
     const highlighted = selectedId !== null && connectedNodeIds.has(n.id);
     return {
       id: n.id,
@@ -104,10 +100,7 @@ function buildTimingNodes(visible: boolean): Node[] {
   }));
 }
 
-function buildEdges(
-  selectedId: string | null,
-  connectedEdgeIds: Set<string>
-): Edge[] {
+function buildEdges(selectedId: string | null, connectedEdgeIds: Set<string>): Edge[] {
   return noticeEdges.map((e) => {
     const dimmed = selectedId !== null && !connectedEdgeIds.has(e.id);
     const highlighted = selectedId !== null && connectedEdgeIds.has(e.id);
@@ -131,12 +124,12 @@ function buildEdges(
         color: dimmed
           ? "#D0CAC0"
           : highlighted || !selectedId
-          ? isEscalation
-            ? palette.slateBlue
-            : isResolution
-            ? palette.sage
-            : palette.muted
-          : "#D0CAC0",
+            ? isEscalation
+              ? palette.slateBlue
+              : isResolution
+                ? palette.sage
+                : palette.muted
+            : "#D0CAC0",
       },
     };
   });
@@ -153,9 +146,7 @@ export function IRSNoticeFlow() {
     ...buildNoticeNodes(null, new Set()),
     ...buildTimingNodes(true),
   ]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(
-    buildEdges(null, new Set())
-  );
+  const [edges, setEdges, onEdgesChange] = useEdgesState(buildEdges(null, new Set()));
 
   // Rebuild when selection or timing changes
   useEffect(() => {
@@ -163,22 +154,22 @@ export function IRSNoticeFlow() {
       ? getConnected(selectedId)
       : { edgeIds: new Set<string>(), nodeIds: new Set<string>() };
 
-    setNodes([
-      ...buildNoticeNodes(selectedId, nodeIds),
-      ...buildTimingNodes(showTiming),
-    ]);
+    setNodes([...buildNoticeNodes(selectedId, nodeIds), ...buildTimingNodes(showTiming)]);
     setEdges(buildEdges(selectedId, edgeIds));
   }, [selectedId, showTiming, setNodes, setEdges]);
 
-  const onNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
-    // Timing label nodes are not interactive
-    if (node.type === "timingNode") return;
+  const onNodeClick: NodeMouseHandler = useCallback(
+    (_evt, node) => {
+      // Timing label nodes are not interactive
+      if (node.type === "timingNode") return;
 
-    const data = node.data as unknown as NoticeNodeData;
-    const next = selectedId === data.id ? null : data.id;
-    setSelectedId(next);
-    setSelectedNode(next ? data : null);
-  }, [selectedId]);
+      const data = node.data as unknown as NoticeNodeData;
+      const next = selectedId === data.id ? null : data.id;
+      setSelectedId(next);
+      setSelectedNode(next ? data : null);
+    },
+    [selectedId],
+  );
 
   const onPaneClick = useCallback(() => {
     setSelectedId(null);
@@ -230,9 +221,8 @@ export function IRSNoticeFlow() {
             lineHeight: 1.6,
           }}
         >
-          The IRS communicates through a defined sequence of notices. Each
-          branch represents a decision point — paying, responding, or ignoring
-          determines which path follows.
+          The IRS communicates through a defined sequence of notices. Each branch represents a
+          decision point — paying, responding, or ignoring determines which path follows.
         </p>
 
         {/* Toolbar */}
@@ -255,12 +245,13 @@ export function IRSNoticeFlow() {
           >
             {showTiming ? "Hide timing" : "Show timing"}
           </button>
-          <span style={{ fontSize: 11, color: "#B0A998" }}>
-            Click any node to learn more
-          </span>
+          <span style={{ fontSize: 11, color: "#B0A998" }}>Click any node to learn more</span>
           {selectedId && (
             <button
-              onClick={() => { setSelectedId(null); setSelectedNode(null); }}
+              onClick={() => {
+                setSelectedId(null);
+                setSelectedNode(null);
+              }}
               style={{
                 fontFamily: SANS,
                 fontSize: 11,
@@ -304,8 +295,9 @@ export function IRSNoticeFlow() {
           nodesDraggable={false}
           nodesConnectable={false}
           elementsSelectable
+          zoomOnScroll
           panOnScroll={false}
-          preventScrolling={false}
+          preventScrolling
         >
           <AutoFitViewport />
           <Controls showInteractive={false} />
@@ -315,7 +307,10 @@ export function IRSNoticeFlow() {
         {/* Detail panel — top-right, slides in on selection */}
         <NodeDetailPanel
           node={selectedNode}
-          onClose={() => { setSelectedId(null); setSelectedNode(null); }}
+          onClose={() => {
+            setSelectedId(null);
+            setSelectedNode(null);
+          }}
         />
       </div>
     </div>
