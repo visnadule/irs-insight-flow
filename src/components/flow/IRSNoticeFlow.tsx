@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, useLayoutEffect } from "react";
 import {
   ReactFlow,
-  ReactFlowProvider,
   Controls,
   useNodesState,
   useEdgesState,
@@ -51,22 +50,23 @@ function useViewportWidth(): number {
 }
 
 // ─── Auto-fit viewport ────────────────────────────────────────────────────────
-// On desktop/tablet: fit the full diagram.
-// On mobile (<640 px): fit only the Balance Due track (top row) so the most
-// common entry path is legible without requiring the user to zoom in first.
+// Each breakpoint targets a node subset that yields a legible initial zoom:
+//   mobile  2 nodes (x 0–420) → zoom ≈ 0.74 → 12 px text renders at ~8.9 px  ✓
+//   tablet  3 nodes (x 0–670) → zoom ≈ 0.99 → 12 px text renders at ~11.9 px ✓
+//   desktop full diagram      → zoom ≈ 0.68 → fits all three tracks in view   ✓
+// The user pans / zooms to explore the rest; minZoom allows enough zoom-out
+// to see structure even if individual labels become small.
 
-const MOBILE_FIT_NODES = [
-  { id: "start-balance" },
-  { id: "cp14" },
-  { id: "cp501" },
-  { id: "cp503" },
-];
+const MOBILE_FIT_NODES  = [{ id: "start-balance" }, { id: "cp14" }];
+const TABLET_FIT_NODES  = [{ id: "start-balance" }, { id: "cp14" }, { id: "cp501" }];
 
-function AutoFitViewport({ isMobile }: { isMobile: boolean }) {
+function AutoFitViewport({ isMobile, isTablet }: { isMobile: boolean; isTablet: boolean }) {
   const { fitView } = useReactFlow();
   useLayoutEffect(() => {
     if (isMobile) {
-      fitView({ nodes: MOBILE_FIT_NODES, padding: 0.12, duration: 0 });
+      fitView({ nodes: MOBILE_FIT_NODES, padding: 0.10, duration: 0 });
+    } else if (isTablet) {
+      fitView({ nodes: TABLET_FIT_NODES, padding: 0.08, duration: 0 });
     } else {
       fitView({ padding: 0.06, duration: 0 });
     }
@@ -173,8 +173,11 @@ export function IRSNoticeFlow() {
   const isMobile = vpWidth < 640;
   const isTablet = vpWidth >= 640 && vpWidth < 1024;
 
-  // minZoom floor: keep text legible at each breakpoint
-  const minZoom = isMobile ? 0.35 : isTablet ? 0.22 : 0.15;
+  // minZoom floors: starting zoom is legible (see MOBILE/TABLET_FIT_NODES above);
+  // the floor lets users zoom further out to see diagram structure as an overview.
+  // At minZoom=0.45 on mobile, 12 px text renders at ~5.4 px — small but usable
+  // as a navigational overview before pinching back in.
+  const minZoom = isMobile ? 0.45 : isTablet ? 0.30 : 0.15;
 
   const [nodes, setNodes, onNodesChange] = useNodesState([
     ...buildNoticeNodes(null, new Set()),
@@ -324,68 +327,63 @@ export function IRSNoticeFlow() {
       </header>
 
       {/* ── Canvas ─────────────────────────────────────────────────────────── */}
-      {/*
-        ReactFlowProvider with a stable key gives this diagram instance its own
-        isolated Zustand store on every mount. This guarantees the viewport is
-        never inherited from another diagram — even if TanStack Router's
-        Suspense/preload logic keeps the component tree alive across navigations.
-        defaultViewport resets the internal viewport to a known origin before
-        AutoFitViewport's fitView() call adjusts it to the actual content bounds.
-      */}
-      <ReactFlowProvider key="irs-notice-flow">
-        <div
-          style={{
-            flex: 1,
-            position: "relative",
-            minHeight: 0,
-            borderTop: `1px solid ${palette.border}`,
-            overflow: "hidden",
-            // Prevent browser pinch-to-zoom on the canvas area.
-            // ReactFlow handles pinch-to-zoom internally via zoomOnPinch.
-            touchAction: "none",
-          }}
+      <div
+        style={{
+          flex: 1,
+          position: "relative",
+          minHeight: 0,
+          borderTop: `1px solid ${palette.border}`,
+          overflow: "hidden",
+          // touch-action:none tells the browser not to handle touch gestures
+          // here; ReactFlow's own pointer handlers manage pan and pinch-zoom.
+          // This prevents iOS Safari from triggering browser-level page zoom
+          // when the user pinches inside the canvas.
+          touchAction: "none",
+        }}
+      >
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onNodeClick={onNodeClick}
+          onPaneClick={onPaneClick}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          minZoom={minZoom}
+          maxZoom={2}
+          defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+          proOptions={{ hideAttribution: false }}
+          style={{ background: "transparent" }}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          elementsSelectable
+          zoomOnScroll
+          zoomOnPinch
+          panOnScroll={false}
+          panOnDrag
+          // preventScrolling (default true): ReactFlow registers its wheel
+          // listener with { passive: false } on the canvas element, so
+          // preventDefault() is NOT blocked by the cross-origin iframe
+          // passive-listener restriction (which only applies to document/window
+          // listeners in the outer frame). Keeping this default ensures
+          // scroll-to-zoom works without the page racing to scroll instead.
         >
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onNodeClick={onNodeClick}
-            onPaneClick={onPaneClick}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            minZoom={minZoom}
-            maxZoom={2}
-            defaultViewport={{ x: 0, y: 0, zoom: 1 }}
-            proOptions={{ hideAttribution: false }}
-            style={{ background: "transparent" }}
-            nodesDraggable={false}
-            nodesConnectable={false}
-            elementsSelectable
-            zoomOnScroll
-            zoomOnPinch
-            panOnScroll={false}
-            panOnDrag
-            // preventScrolling intentionally omitted: calling preventDefault()
-            // on passive wheel listeners is silently blocked in cross-origin
-            // iframes. touch-action:none on the wrapper handles iOS Safari.
-          >
-            <AutoFitViewport isMobile={isMobile} />
-            <Controls showInteractive={false} />
-            {/* Legend hidden on mobile — cramped and partially obscures nodes */}
-            {!isMobile && <Legend />}
-          </ReactFlow>
+          <AutoFitViewport isMobile={isMobile} isTablet={isTablet} />
+          <Controls showInteractive={false} />
+          {/* Legend hidden on mobile — cramped and partially obscures nodes */}
+          {!isMobile && <Legend />}
+        </ReactFlow>
 
-          {/* Detail panel */}
-          <NodeDetailPanel
-            node={selectedNode}
-            onClose={() => {
-              setSelectedId(null);
-              setSelectedNode(null);
-            }}
-          />
-        </div>
-      </ReactFlowProvider>
+        {/* Detail panel */}
+        <NodeDetailPanel
+          node={selectedNode}
+          onClose={() => {
+            setSelectedId(null);
+            setSelectedNode(null);
+          }}
+        />
+      </div>
     </div>
   );
 }
