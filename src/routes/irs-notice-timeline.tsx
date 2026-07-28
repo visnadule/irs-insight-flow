@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import { EmbedAutoResize } from "@/components/EmbedAutoResize";
 import { DiagramCallout } from "@/components/DiagramCallout";
@@ -32,6 +32,13 @@ function LoadingDiagram() {
 }
 
 function IRSNoticeTimeline() {
+  // location.key is a unique string per History entry (changes on every
+  // navigation, including back/forward). Passing it as key to IRSNoticeFlow
+  // forces React to unmount and remount the component on each navigation,
+  // which creates a fresh ReactFlow internal store — so zoom/viewport never
+  // leaks from a previous visit to this route.
+  const { location } = useRouterState();
+
   return (
     <>
       <EmbedAutoResize />
@@ -47,7 +54,7 @@ function IRSNoticeTimeline() {
         }}
       >
         <Suspense fallback={<LoadingDiagram />}>
-          <IRSNoticeFlow />
+          <IRSNoticeFlow key={location.key} />
         </Suspense>
       </div>
 
