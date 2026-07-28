@@ -63,18 +63,22 @@ export interface TimingAnnotation {
 
 export const timingAnnotations: TimingAnnotation[] = [
   // Track 1 — Balance Due (nodes at y=0, timing band at y=90)
+  // t1-4/t1-5/t1-6 raised to y=70: their original y=90 placed them only ~38px
+  // below the bezier midpoints of resolution-exit edges, risking visual overlap.
   { id: "t1-1", text: "≈3–6 weeks",    position: { x: 210, y: 90 } },
   { id: "t1-2", text: "≈5 weeks",       position: { x: 460, y: 90 } },
   { id: "t1-3", text: "≈5 weeks",       position: { x: 710, y: 90 } },
-  { id: "t1-4", text: "≈5 weeks",       position: { x: 960, y: 90 } },
-  { id: "t1-5", text: "≈5 weeks",       position: { x: 1210, y: 90 } },
-  { id: "t1-6", text: "after hearing",  position: { x: 1460, y: 90 } },
+  { id: "t1-4", text: "≈5 weeks",       position: { x: 960, y: 70 } },
+  { id: "t1-5", text: "≈5 weeks",       position: { x: 1210, y: 70 } },
+  { id: "t1-6", text: "after hearing",  position: { x: 1460, y: 70 } },
 
   // Track 2 — AUR Mismatch (nodes at y=340, timing band at y=440)
+  // t2-4 shifted left+up: its original position (960, 440) coincided exactly
+  // (dist=3px) with the bezier midpoint of the cp3219a→end-court edge label.
   { id: "t2-1", text: "≈12–18 months",  position: { x: 210, y: 440 } },
   { id: "t2-2", text: "≈8 weeks",       position: { x: 460, y: 440 } },
   { id: "t2-3", text: "≈3–6 months",    position: { x: 710, y: 440 } },
-  { id: "t2-4", text: "within 90 days", position: { x: 960, y: 440 } },
+  { id: "t2-4", text: "within 90 days", position: { x: 840, y: 413 } },
 
   // Track 3 — Review/Math (nodes at y=540–660, timing band at y=730)
   { id: "t3-1", text: "≈45–60 days",    position: { x: 210, y: 730 } },

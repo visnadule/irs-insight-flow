@@ -34,14 +34,40 @@ const palette = {
   ink: "#1A1D24",
 };
 
-// ─── Auto-fit viewport ────────────────────────────────────────────────────────
-// Rendered as a child of <ReactFlow> so it has access to the flow context.
-// useLayoutEffect fires synchronously after DOM paint — nodes are measured by then.
+// ─── Viewport-width breakpoints ───────────────────────────────────────────────
 
-function AutoFitViewport() {
+function useViewportWidth(): number {
+  const [width, setWidth] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
+  useEffect(() => {
+    const handler = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return width;
+}
+
+// ─── Auto-fit viewport ────────────────────────────────────────────────────────
+// On desktop/tablet: fit the full diagram.
+// On mobile (<640 px): fit only the Balance Due track (top row) so the most
+// common entry path is legible without requiring the user to zoom in first.
+
+const MOBILE_FIT_NODES = [
+  { id: "start-balance" },
+  { id: "cp14" },
+  { id: "cp501" },
+  { id: "cp503" },
+];
+
+function AutoFitViewport({ isMobile }: { isMobile: boolean }) {
   const { fitView } = useReactFlow();
   useLayoutEffect(() => {
-    fitView({ padding: 0.06, duration: 0 });
+    if (isMobile) {
+      fitView({ nodes: MOBILE_FIT_NODES, padding: 0.12, duration: 0 });
+    } else {
+      fitView({ padding: 0.06, duration: 0 });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return null;
@@ -64,7 +90,6 @@ function getConnected(nodeId: string) {
 
 // ─── Node / edge builders ─────────────────────────────────────────────────────
 
-// Approximate rendered dimensions — allows fitView to compute bounds before DOM measurement.
 const NOTICE_NODE_W = 170;
 const NOTICE_NODE_H = 56;
 
@@ -142,6 +167,13 @@ export function IRSNoticeFlow() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<NoticeNodeData | null>(null);
 
+  const vpWidth = useViewportWidth();
+  const isMobile = vpWidth < 640;
+  const isTablet = vpWidth >= 640 && vpWidth < 1024;
+
+  // minZoom floor: keep text legible at each breakpoint
+  const minZoom = isMobile ? 0.35 : isTablet ? 0.22 : 0.15;
+
   const [nodes, setNodes, onNodesChange] = useNodesState([
     ...buildNoticeNodes(null, new Set()),
     ...buildTimingNodes(true),
@@ -160,9 +192,7 @@ export function IRSNoticeFlow() {
 
   const onNodeClick: NodeMouseHandler = useCallback(
     (_evt, node) => {
-      // Timing label nodes are not interactive
       if (node.type === "timingNode") return;
-
       const data = node.data as unknown as NoticeNodeData;
       const next = selectedId === data.id ? null : data.id;
       setSelectedId(next);
@@ -188,7 +218,12 @@ export function IRSNoticeFlow() {
       }}
     >
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <header style={{ padding: "24px 32px 14px", flexShrink: 0 }}>
+      <header
+        style={{
+          padding: isMobile ? "12px 16px 10px" : "24px 32px 14px",
+          flexShrink: 0,
+        }}
+      >
         <p
           style={{
             fontSize: 10,
@@ -203,7 +238,7 @@ export function IRSNoticeFlow() {
         <h1
           style={{
             fontFamily: '"Source Serif 4", Georgia, serif',
-            fontSize: "clamp(20px, 3.2vw, 32px)",
+            fontSize: isMobile ? "clamp(17px, 5vw, 22px)" : "clamp(20px, 3.2vw, 32px)",
             fontWeight: 400,
             color: palette.ink,
             margin: "0 0 6px",
@@ -212,21 +247,33 @@ export function IRSNoticeFlow() {
         >
           How IRS notices escalate over time
         </h1>
-        <p
-          style={{
-            fontSize: 13,
-            color: palette.muted,
-            margin: 0,
-            maxWidth: 540,
-            lineHeight: 1.6,
-          }}
-        >
-          The IRS communicates through a defined sequence of notices. Each branch represents a
-          decision point — paying, responding, or ignoring determines which path follows.
-        </p>
+
+        {/* Description — hidden on mobile to save vertical space */}
+        {!isMobile && (
+          <p
+            style={{
+              fontSize: 13,
+              color: palette.muted,
+              margin: 0,
+              maxWidth: 540,
+              lineHeight: 1.6,
+            }}
+          >
+            The IRS communicates through a defined sequence of notices. Each branch represents a
+            decision point — paying, responding, or ignoring determines which path follows.
+          </p>
+        )}
 
         {/* Toolbar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: isMobile ? 8 : 10,
+            marginTop: isMobile ? 8 : 12,
+          }}
+        >
           <button
             onClick={() => setShowTiming((v) => !v)}
             style={{
@@ -237,15 +284,19 @@ export function IRSNoticeFlow() {
               background: showTiming ? "rgba(62,92,118,0.07)" : "transparent",
               border: `1px solid ${showTiming ? "rgba(62,92,118,0.22)" : palette.border}`,
               borderRadius: 20,
-              padding: "4px 12px",
+              padding: isMobile ? "6px 14px" : "4px 12px",
               cursor: "pointer",
               transition: "all 150ms ease",
               letterSpacing: "0.01em",
+              // Larger touch target on mobile
+              minHeight: isMobile ? 36 : undefined,
             }}
           >
             {showTiming ? "Hide timing" : "Show timing"}
           </button>
-          <span style={{ fontSize: 11, color: "#B0A998" }}>Click any node to learn more</span>
+          <span style={{ fontSize: 11, color: "#B0A998" }}>
+            {isMobile ? "Tap a node · pinch to zoom" : "Click any node to learn more"}
+          </span>
           {selectedId && (
             <button
               onClick={() => {
@@ -259,11 +310,12 @@ export function IRSNoticeFlow() {
                 background: "transparent",
                 border: `1px solid ${palette.border}`,
                 borderRadius: 20,
-                padding: "4px 12px",
+                padding: isMobile ? "6px 14px" : "4px 12px",
                 cursor: "pointer",
+                minHeight: isMobile ? 36 : undefined,
               }}
             >
-              Clear selection ×
+              Clear ×
             </button>
           )}
         </div>
@@ -277,6 +329,9 @@ export function IRSNoticeFlow() {
           minHeight: 0,
           borderTop: `1px solid ${palette.border}`,
           overflow: "hidden",
+          // Prevent iOS Safari page-scroll when touching inside the diagram;
+          // ReactFlow handles touch gestures (pinch-zoom, pan) directly.
+          touchAction: "none",
         }}
       >
         <ReactFlow
@@ -288,7 +343,7 @@ export function IRSNoticeFlow() {
           onPaneClick={onPaneClick}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
-          minZoom={0.15}
+          minZoom={minZoom}
           maxZoom={2}
           proOptions={{ hideAttribution: false }}
           style={{ background: "transparent" }}
@@ -296,15 +351,21 @@ export function IRSNoticeFlow() {
           nodesConnectable={false}
           elementsSelectable
           zoomOnScroll
+          zoomOnPinch
           panOnScroll={false}
-          preventScrolling
+          panOnDrag
+          // preventScrolling intentionally omitted: calling preventDefault() on
+          // passive wheel listeners is silently blocked in cross-origin iframes
+          // (Replit preview), which broke scroll-to-zoom. touch-action:none on
+          // the wrapper handles iOS Safari touch-scroll instead.
         >
-          <AutoFitViewport />
+          <AutoFitViewport isMobile={isMobile} />
           <Controls showInteractive={false} />
-          <Legend />
+          {/* Hide legend on very small screens — cramped and partially obscures nodes */}
+          {!isMobile && <Legend />}
         </ReactFlow>
 
-        {/* Detail panel — top-right, slides in on selection */}
+        {/* Detail panel */}
         <NodeDetailPanel
           node={selectedNode}
           onClose={() => {
