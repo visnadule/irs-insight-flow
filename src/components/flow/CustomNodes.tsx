@@ -139,7 +139,7 @@ export function TimingLabelNode({ data }: NodeProps & { data: TimingNodeData }) 
         fontFamily: SANS,
         fontSize: 10,
         fontStyle: "italic",
-        color: "#9CA3AF",
+        color: "#5E6875", // darkened from #9CA3AF — #9CA3AF fails contrast on parchment
         whiteSpace: "nowrap",
         lineHeight: 1.4,
         userSelect: "none",

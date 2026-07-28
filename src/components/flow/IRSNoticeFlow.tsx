@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useLayoutEffect } from "react";
 import {
   ReactFlow,
+  ReactFlowProvider,
   Controls,
   useNodesState,
   useEdgesState,
@@ -25,13 +26,14 @@ import { Legend } from "./Legend";
 
 const SANS = '"Inter", ui-sans-serif, system-ui, sans-serif';
 const palette = {
-  slateBlue: "#3E5C76",
-  sage: "#7D9A82",
+  slateBlue:  "#3E5C76",
+  sage:       "#4E7A55", // darkened from #7D9A82 — matches CustomEdge resolution colour
   terracotta: "#B97A57",
-  paper: "#F7F5F0",
-  border: "#D8D2C8",
-  muted: "#6B7280",
-  ink: "#1A1D24",
+  paper:      "#F7F5F0",
+  border:     "#D8D2C8",
+  muted:      "#6B7280",
+  neutral:    "#6A7A8A", // darkened from #9FA8B3 — matches CustomEdge neutral colour
+  ink:        "#1A1D24",
 };
 
 // ─── Viewport-width breakpoints ───────────────────────────────────────────────
@@ -152,8 +154,8 @@ function buildEdges(selectedId: string | null, connectedEdgeIds: Set<string>): E
             ? isEscalation
               ? palette.slateBlue
               : isResolution
-                ? palette.sage
-                : palette.muted
+                ? palette.sage        // darkened to #4E7A55
+                : palette.neutral     // darkened to #6A7A8A
             : "#D0CAC0",
       },
     };
@@ -322,58 +324,68 @@ export function IRSNoticeFlow() {
       </header>
 
       {/* ── Canvas ─────────────────────────────────────────────────────────── */}
-      <div
-        style={{
-          flex: 1,
-          position: "relative",
-          minHeight: 0,
-          borderTop: `1px solid ${palette.border}`,
-          overflow: "hidden",
-          // Prevent iOS Safari page-scroll when touching inside the diagram;
-          // ReactFlow handles touch gestures (pinch-zoom, pan) directly.
-          touchAction: "none",
-        }}
-      >
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onNodeClick={onNodeClick}
-          onPaneClick={onPaneClick}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          minZoom={minZoom}
-          maxZoom={2}
-          proOptions={{ hideAttribution: false }}
-          style={{ background: "transparent" }}
-          nodesDraggable={false}
-          nodesConnectable={false}
-          elementsSelectable
-          zoomOnScroll
-          zoomOnPinch
-          panOnScroll={false}
-          panOnDrag
-          // preventScrolling intentionally omitted: calling preventDefault() on
-          // passive wheel listeners is silently blocked in cross-origin iframes
-          // (Replit preview), which broke scroll-to-zoom. touch-action:none on
-          // the wrapper handles iOS Safari touch-scroll instead.
-        >
-          <AutoFitViewport isMobile={isMobile} />
-          <Controls showInteractive={false} />
-          {/* Hide legend on very small screens — cramped and partially obscures nodes */}
-          {!isMobile && <Legend />}
-        </ReactFlow>
-
-        {/* Detail panel */}
-        <NodeDetailPanel
-          node={selectedNode}
-          onClose={() => {
-            setSelectedId(null);
-            setSelectedNode(null);
+      {/*
+        ReactFlowProvider with a stable key gives this diagram instance its own
+        isolated Zustand store on every mount. This guarantees the viewport is
+        never inherited from another diagram — even if TanStack Router's
+        Suspense/preload logic keeps the component tree alive across navigations.
+        defaultViewport resets the internal viewport to a known origin before
+        AutoFitViewport's fitView() call adjusts it to the actual content bounds.
+      */}
+      <ReactFlowProvider key="irs-notice-flow">
+        <div
+          style={{
+            flex: 1,
+            position: "relative",
+            minHeight: 0,
+            borderTop: `1px solid ${palette.border}`,
+            overflow: "hidden",
+            // Prevent browser pinch-to-zoom on the canvas area.
+            // ReactFlow handles pinch-to-zoom internally via zoomOnPinch.
+            touchAction: "none",
           }}
-        />
-      </div>
+        >
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onNodeClick={onNodeClick}
+            onPaneClick={onPaneClick}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            minZoom={minZoom}
+            maxZoom={2}
+            defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+            proOptions={{ hideAttribution: false }}
+            style={{ background: "transparent" }}
+            nodesDraggable={false}
+            nodesConnectable={false}
+            elementsSelectable
+            zoomOnScroll
+            zoomOnPinch
+            panOnScroll={false}
+            panOnDrag
+            // preventScrolling intentionally omitted: calling preventDefault()
+            // on passive wheel listeners is silently blocked in cross-origin
+            // iframes. touch-action:none on the wrapper handles iOS Safari.
+          >
+            <AutoFitViewport isMobile={isMobile} />
+            <Controls showInteractive={false} />
+            {/* Legend hidden on mobile — cramped and partially obscures nodes */}
+            {!isMobile && <Legend />}
+          </ReactFlow>
+
+          {/* Detail panel */}
+          <NodeDetailPanel
+            node={selectedNode}
+            onClose={() => {
+              setSelectedId(null);
+              setSelectedNode(null);
+            }}
+          />
+        </div>
+      </ReactFlowProvider>
     </div>
   );
 }

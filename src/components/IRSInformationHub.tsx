@@ -103,7 +103,16 @@ export function IRSInformationHub() {
   return (
     <section
       className="w-full px-6 py-16 md:py-24"
-      style={{ backgroundColor: "#F7F5F0", color: "#1A1D24", fontFamily: "Inter, ui-sans-serif, system-ui" }}
+      style={{
+        backgroundColor: "#F7F5F0",
+        color: "#1A1D24",
+        fontFamily: "Inter, ui-sans-serif, system-ui",
+        // Allow vertical scrolling but prevent browser pinch-to-zoom on this
+        // page. Without this guard, pinching on the hub zooms the browser tab
+        // and that zoom level persists when the user navigates to the flow
+        // diagram, making the two diagrams appear to share a viewport state.
+        touchAction: "pan-y",
+      }}
     >
       <div className="mx-auto max-w-6xl">
         <header className="mb-12 md:mb-16">
@@ -142,8 +151,8 @@ export function IRSInformationHub() {
                   key={l.id}
                   d={l.d}
                   fill="none"
-                  stroke={active ? "#3E5C76" : "#CFC9BB"}
-                  strokeWidth={active ? 1.25 : 0.75}
+                  stroke={active ? "#3E5C76" : "#9A9088"}
+                  strokeWidth={active ? 1.5 : 1.0}
                   style={{ transition: "stroke 220ms ease, stroke-width 220ms ease" }}
                 />
               );
